@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volt</title>
+    <style>
+        /* Global Styles */
+        body {
+            background-color: rgb(5, 5, 53);
+            background-size: cover;
+            text-align: center;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+            color: white;
+            overflow-x: hidden;
+            overflow-y: scroll;
+        }
+
+        /* Header Styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            height: 15px;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: black;
+        }
+
+        .menu {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .menu a {
+            color: black;
+            font-weight: bold;
+            text-decoration: none;
+            margin-left: 20px;
+            transition: color 0.3s;
+        }
+
+        .menu a:hover {
+            color: navy;
+        }
+
+        /* Hamburger Menu Styles */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .hamburger div {
+            width: 25px;
+            height: 3px;
+            background-color: white;
+            margin: 3px 0;
+            transition: 0.3s;
+        }
+
+        /* Menu Items Styles */
+        .menu-items {
+            display: none;
+            flex-direction: column;
+            text-decoration: none;
+            width: 50%;
+            position: absolute;
+            top: 60px;
+            background-color: rgba(2, 10, 32, 0.8);
+            z-index: 10;
+            margin-left: 200px;
+            border-radius: 5px;
+        }
+
+        .menu-items.active {
+            display: flex;
+        }
+
+        .menu-items a {
+            margin: 10px 0;
+            color: #fff;
+            text-decoration: none;
+            padding: 7px;
+            border-radius: 5px;
+        }
+
+        .menu-items a:hover {
+            background-color: grey;
+        }
+
+
+        /* Chat Container Styles */
+        .chat-container {
+            width: 90%;
+            max-width: 400px;
+            background: rgba(0, 0, 51, 0.7);
+            border-radius: 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .chat-box {
+            height: 300px;
+            padding: 15px;
+            overflow-y: auto;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-area {
+            display: flex;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        #command-select {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            outline: none;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #fff;
+        }
+
+        #send-btn {
+            margin-left: 10px;
+            padding: 10px 20px;
+            border: none;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #send-btn:hover {
+            background-color: rgba(0, 0, 0, 0.9);
+        }
+
+        /* Message Styles */
+        .message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.8);
+            width: fit-content;
+            max-width: 75%;
+            word-wrap: break-word;
+        }
+
+        .message.user {
+            background-color: rgba(255, 255, 255, 0.35);
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .message.bot {
+            background-color: rgba(2, 22, 114, 0.35);
+            margin-right: auto;
+            text-align: left;
+        }
+
+        /* Carousel Styles */
+        .carousel-container {
+            width: 200px;
+            height: 420px; 
+            overflow-x: scroll;
+            overflow-y: hidden;
+            scroll-snap-type: x mandatory; 
+            box-sizing: border-box;
+            background: rgba(0, 0, 0, 0.7); 
+            border-radius: 30px;
+            position: absolute;
+            z-index: 1; 
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-top: 1140px;
+        }
+        
+
+        .carousel {
+            display: flex;
+            scroll-behavior: smooth; 
+        }
+
+        .carousel-item {
+            max-width: 250px; 
+            flex: 0 0 auto; 
+            scroll-snap-align: center; 
+            margin-right: 10px;
+            max-height: 600px;
+        }
+
+        .carousel img {
+            width: 100%;
+            height: 450px; 
+            object-fit: cover; 
+            border-radius: 10px; 
+        }
+        
+       
+        .iphone-frame {
+            position: absolute;
+            width: 300px; 
+            height: 550px; 
+            background: url('iphonno.png') no-repeat center;
+            background-size: contain;
+            top: 30px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            z-index: 2; 
+            pointer-events: none;
+            margin-top: 1100px;
+        }
+
+        .iphone-interactive {
+            position: absolute; 
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 3; 
+            pointer-events: auto; 
+        }
+
+        .indicators {
+            position: absolute; 
+            bottom: 20px; 
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            z-index: 4;
+        }
+
+        .indicator {
+            width: 10px;
+            height: 10px;
+            margin: 0 5px;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .indicator.active {
+            background-color: #00BFFF;
+        }
+
+        
+        .carousel-container::-webkit-scrollbar {
+            display: none;
+        }
+        .carousel-container {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* About Volt Styles */
+        .about-volt {
+            text-align: center;
+        }
+
+        .about-volt h1 {
+            color: #fff;
+            font-weight: 700;
+            text-shadow:  5px 5px 8px rgba(0, 0, 0, 0.4);
+            font-size: 3rem;
+        }
+
+        .about-volt h2 {
+            font-size: 2rem;
+            color: #e2e2e2;
+            font-weight: 600;
+            margin-top: 40px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            text-shadow: 0px 3px 8px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        .about-volt p {
+            font-size: 1.2rem;
+            line-height: 1.7;
+            max-width: 800px;
+            margin: 20px auto;
+            color: #f1f1f1;
+            text-shadow: 0px 2px 8px rgba(0, 0, 0, 0.6);
+            padding: 0 15px;
+        }
+
+        /* About Creators Styles */
+        .about-creators {
+            margin-top: 80px;
+            padding: 0 15px;
+        }
+
+        .creators-container {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .creator {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 25px;
+            border-radius: 15px;
+            width: 280px;
+            transition: transform 0.3s ease-in-out;
+            box-shadow: 0px 12px 20px rgba(0, 0, 0, 0.7);
+        }
+
+        .creator:hover {
+            transform: scale(1.05);
+        }
+
+        .creator h3 {
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .creator p {
+            font-size: 1rem;
+            color: #ddd;
+            text-shadow: none;
+        }
+
+        .about-creators h2 {
+            text-align: center;
+            font-size: 2rem;
+        }
+
+        .future2 h2{
+            color: black;
+            background-color: #fff;
+        }
+
+/* Font Import */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Montserrat:wght@400;700&display=swap');
+
+/* Styling for Welcome Text */
+.welcome-text {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.5rem;
+    color: #e2e2e2; /* Slightly lighter than white */
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+    letter-spacing: 1.5px;
+    margin: 0;
+}
+
+/* Styling for Future Text */
+.future-text {
+    font-family: 'Roboto', sans-serif;
+    font-size: 3rem; /* Increased size for emphasis */
+    color: #fff; /* Bright blue to stand out */
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
+    margin: 10px 0; /* Space between texts */
+}
+
+/* Styling for Volt Text */
+.volt-text {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.5rem;
+    color: #e2e2e2; /* Similar to Welcome Text */
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+    letter-spacing: 1.5px;
+    margin: 0;
+}
+
+.footer {
+    background-color: rgba(2, 10, 32, 0.8);
+    color: white;
+    padding: 20px 0;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+
+.footer-container {
+    display: flex;
+    justify-content: center; /* Center align the links */
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.footer-links h4 {
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+}
+
+.footer-links ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-links li {
+    margin: 8px 0;
+}
+
+.footer-links a {
+    color: #aceaff;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer-links a:hover {
+    color: #fff;
+}
+
+.footer-bottom {
+    text-align: center;
+    margin-top: 20px;
+}
+
+@media screen and (max-width: 1024px) {
+
+    /* Styling for Welcome Text */
+    .welcome-text {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1.5rem;
+        color: #e2e2e2; /* Slightly lighter than white */
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+        letter-spacing: 1.5px;
+        margin: 0;
+    }
+
+    /* Styling for Future Text */
+    .future-text {
+        font-family: 'Roboto', sans-serif;
+        font-size: 3rem; /* Increased size for emphasis */
+        color: #fff; /* Bright blue to stand out */
+        text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
+        margin: 10px 0; /* Space between texts */
+    }
+
+    /* Styling for Volt Text */
+    .volt-text {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 2rem;
+        padding: 1px;
+        color: #e2e2e2; /* Similar to Welcome Text */
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+        letter-spacing: 1.5px;
+        margin: 0;
+}
+}
+
+
+@media screen and (max-width: 450px) {
+
+    /* Styling for Welcome Text */
+    .welcome-text {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1.5rem;
+        color: #e2e2e2; /* Slightly lighter than white */
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+        letter-spacing: 1.5px;
+        margin: 0;
+    }
+
+    /* Styling for Future Text */
+    .future-text {
+        font-family: 'Roboto', sans-serif;
+        font-size: 3rem; /* Increased size for emphasis */
+        color: #fff; /* Bright blue to stand out */
+        text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
+        margin: 10px 0; /* Space between texts */
+    }
+
+    /* Styling for Volt Text */
+    .volt-text {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 2rem;
+        padding: 1px;
+        color: #e2e2e2; /* Similar to Welcome Text */
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+        letter-spacing: 1.5px;
+        margin: 0;
+}
+}
+
+    </style>
+</head>
+<body>
+    <br><br><br><br><br><br><br><br><br><br>
+    <h2 class="welcome-text">Welcome to</h2>
+    <br>
+    <h1 class="future-text">The Future</h1>
+    <br>
+    <h2 class="volt-text">Volt The Future of Transportation</h2>
+    <br>
+
+    <div class="header">
+        <div class="logo">Volt</div>
+        <div class="hamburger" id="hamburger">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <nav class="menu">
+            <a href="#chatbot">VoltBot</a>
+            <a href="#aboutvolt">About</a>
+            <a href="#future1">Future</a>
+        </nav>
+    </div>
+
+
+    <div class="menu-items" id="menu-items">
+        <a href="#chatbot">VoltBot</a>
+        <a href="#aboutvolt">About</a>
+        <a href="#future1">Future</a>
+    </div>
+    <br><br><br><br><br><br>
+
+    <div class="chatbot" id="chatbot"><h2>Volt ChatBot</h2></div>
+    <div class="chat-container" id="chat-bot">
+        <div class="chat-box" id="chat-box"></div> <!-- Fixed ID here -->
+        <div class="input-area">
+            <select id="command-select">
+                <option value="what is your name">What's your name?</option>
+                <option value="what are you">What are you?</option>
+                <option value="who came up with the idea">Who came up with the idea?</option>
+                <option value="who helped develop the idea">Who helped develop the idea?</option>
+                <option value="who are the creators of volt">Who created Volt?</option>
+                <option value="whats volt">What's Volt?</option>
+                <option value="how does volt work">How does Volt work?</option>
+                <option value="date">What's today's date?</option>
+                <option value="time">What's the time?</option>
+            </select>
+            <button id="send-btn">Send</button>
+        </div>
+    </div>
+
+    <br><br><br><br><br><br>
+    
+    <h2 id="future1">A Glims Through future</h2>
+
+    <div class="carousel-container" id="future">
+        <div class="carousel">
+            <div class="carousel-item">
+                <img src="present.jpeg" alt="Slide 1">
+            </div>
+            <div class="carousel-item">
+                <img src="future2.avif" alt="Slide 2">
+            </div>
+            <div class="carousel-item">
+                <img src="later future.jpg" alt="Slide 3">
+            </div>
+        </div>
+        <div class="iphone-interactive"></div> 
+    </div>
+
+    <div class="iphone-frame">
+        <div class="indicators">
+            <div class="indicator active" data-index="0"></div>
+            <div class="indicator" data-index="1"></div>
+            <div class="indicator" data-index="2"></div>
+        </div>
+    </div>
+
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+    <!-- About Volt -->
+    <div class="about-volt" id="about">
+        <h1 id="aboutvolt">About Volt</h1>
+        <h2>The Future of Travel</h2>
+        <p>When you think of world-changing inventions, what pops into your head? Probably the wheel, right? Well, today, we’re introducing something just as game-changing: Volt – the first-ever maglev capsule. Volt is a futuristic, car-like transport system that’s set to redefine the way we travel.</p>
+        <p>Volt works using advanced maglev technology, allowing it to hover above tracks at incredible speeds. It’s fully autonomous, guided by AI that responds to your commands. No drivers needed – just say where you want to go and let Volt do the rest. With Volt, you're not just traveling; you're gliding into the future.</p>
+        <p>Unlike traditional maglev trains, Volt combines the flexibility of a car with the speed of a jet. We’re starting with key cities, building maglev highways that will soon connect the entire country. Fast, efficient, and safe, Volt is here to revolutionize how we move.</p>
+    </div>
+
+    <!-- About Creators -->
+    <div class="about-creators" id="aboutus">
+        <h2 id="aboutus1">About the Creators</h2>
+        <div class="creators-container">
+            <div class="creator">
+                <h3>Samir Rami Alqedra</h3>
+                <p>Samir, a 16-year-old high school student with a passion for technology, built and designed the Volt capsule and programmed this website. He has been involved in various engineering projects, including the infamous Project Nano</p>
+            </div>
+            <div class="creator">
+                <h3>Nabil Amjed Joudeh</h3>
+                <p>Nabil Amjed, at just 16 years old, is a highly skilled programmer with a focus on software development. He was the one who programmed Volt's assistant and was a pivotal role in the success of the Volt project and was key to Project Nano’s achievement</p>
+            </div>
+            <div class="creator">
+                <h3>Ahmed Ammar Salman</h3>
+                <p>Ahmed is a talented designer responsible for the sleek look of Volt. His creativity drives the visual elements of Volt’s branding and user experience, ensuring it’s as appealing as it is innovative.</p>
+            </div>
+        </div>
+    </div>
+    <br><br><br><br><br><br>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#aboutus1">About Us</a></li>
+                    <li><a href="#future1">future</a></li>
+                    <li><a href="#chatbot">chatbot</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2024 Volt. All rights reserved.</p>
+        </div>
+    </footer>
+    
+
+    <script>
+
+        // Smooth scrolling for navigation links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+            behavior: 'smooth'
+        });
+    });
+});
+
+
+        const carousel = document.querySelector('.carousel-container');
+        const items = document.querySelectorAll('.carousel-item');
+        const indicators = document.querySelectorAll('.indicator');
+        const interactiveOverlay = document.querySelector('.iphone-interactive');
+        let currentIndex = 0;
+
+        function updateIndicators() {
+            indicators.forEach((indicator, index) => {
+                indicator.classList.toggle('active', index === currentIndex);
+            });
+        }
+
+        function scrollToIndex(index) {
+            const itemWidth = items[0].offsetWidth + 10;
+            carousel.scrollTo({
+                left: itemWidth * index,
+                behavior: 'smooth'
+            });
+            currentIndex = index;
+            updateIndicators();
+        }
+
+        indicators.forEach((indicator) => {
+            indicator.addEventListener('click', (e) => {
+                const index = parseInt(e.target.getAttribute('data-index'));
+                scrollToIndex(index);
+            });
+        });
+
+        carousel.addEventListener('scroll', () => {
+            const itemWidth = items[0].offsetWidth + 10;
+            const newIndex = Math.round(carousel.scrollLeft / itemWidth);
+            if (newIndex !== currentIndex) {
+                currentIndex = newIndex;
+                updateIndicators();
+            }
+        });
+
+        interactiveOverlay.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const startX = e.touches[0].clientX;
+            let scrollLeft = carousel.scrollLeft;
+
+            const touchMoveHandler = (e) => {
+                const x = e.touches[0].clientX;
+                const walk = (x - startX) * 2; 
+                carousel.scrollLeft = scrollLeft - walk;
+            };
+
+            const touchEndHandler = () => {
+                interactiveOverlay.removeEventListener('touchmove', touchMoveHandler);
+                interactiveOverlay.removeEventListener('touchend', touchEndHandler);
+            };
+
+            interactiveOverlay.addEventListener('touchmove', touchMoveHandler);
+            interactiveOverlay.addEventListener('touchend', touchEndHandler);
+        });
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+    
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+    
+            // Add event listener to send button
+            document.getElementById('send-btn').addEventListener('click', sendMessage);
+    
+            async function sendMessage() {
+                const chatInput = document.getElementById('command-select');
+                const messageText = chatInput.value;
+    
+                if (messageText) {
+                    const chatBox = document.getElementById('chat-box'); // Use correct ID
+    
+                    const userMessage = document.createElement('div');
+                    userMessage.classList.add('message', 'user');
+                    userMessage.textContent = messageText;
+    
+                    chatBox.appendChild(userMessage);
+    
+                    const typingIndicator = document.createElement('div');
+                    typingIndicator.classList.add('typing-indicator');
+                    typingIndicator.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
+                    chatBox.appendChild(typingIndicator);
+    
+                    chatBox.scrollTop = chatBox.scrollHeight;
+    
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+                    chatBox.removeChild(typingIndicator);
+    
+                    const botMessage = document.createElement('div');
+                    botMessage.classList.add('message', 'bot');
+                    botMessage.textContent = getBotResponse(messageText);
+    
+                    chatBox.appendChild(botMessage);
+                    chatBox.scrollTop = chatBox.scrollHeight;
+    
+                    speak(botMessage.textContent);
+                }
+            }
+    
+            function getBotResponse(message) {
+                switch (message.toLowerCase()) {
+                    case 'what is your name':
+                        return "I'm Volt, here to help you!";
+                    case 'what are you':
+                        return "I'm an A.I chatbot ready to assist with your questions!";
+                    case 'who came up with the idea':
+                        return "It all started with Samir and Nabil.";
+                    case 'who helped develop the idea':
+                        return "Samir and Nabil brought Ahmed to help bring the idea to life.";
+                    case 'who are the creators of volt':
+                        return "Volt was created by a group called LEVEOCY.";
+                    case "whats volt":
+                        return "Volt is a fast, safe, and affordable new transportation system.";
+                    case 'how does volt work':
+                        return "It's a bit too complex to explain here. Check out the Volt section for more details!";
+                    case 'date':
+                        return new Date().toLocaleDateString();
+                    case 'time':
+                        return new Date().toLocaleTimeString();
+                    default:
+                        return "Sorry, I didn't catch that.";
+                }
+            }
+    
+            function speak(text) {
+                const speech = new SpeechSynthesisUtterance(text);
+                const voices = window.speechSynthesis.getVoices();
+    
+                const femaleBritishVoice = voices.find(voice => voice.lang === 'en-GB' && voice.name.includes('Female'));
+    
+                if (femaleBritishVoice) {
+                    speech.voice = femaleBritishVoice;
+                }
+    
+                speech.lang = 'en-GB';
+                speech.volume = 1;
+                speech.rate = 1.0;
+                speech.pitch = 1.1;
+                speech.onend = () => {
+                    console.log("Speech has finished.");
+                };
+    
+                window.speechSynthesis.speak(speech);
+            }
+    
+            window.speechSynthesis.onvoiceschanged = () => {
+                
+            };
+    
+            // Add event listener to hamburger menu
+            document.getElementById('hamburger').addEventListener('click', () => {
+                document.getElementById('menu-items').classList.toggle('active');
+            });
+        });
+
+
+        // Add event listener to hamburger menu
+        document.getElementById('hamburger').addEventListener('click', () => {
+            document.getElementById('menu-items').classList.toggle('active');
+        });
+
+    </script>
+</body>
+</html>
